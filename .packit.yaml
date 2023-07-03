@@ -1,0 +1,44 @@
+---
+packit_instances: ["prod", "stg"]
+specfile_path: wait-for-copr.spec
+files_to_sync:
+  - .packit.yaml
+  - wait-for-copr.spec
+upstream_package_name: wait-for-copr
+downstream_package_name: wait-for-copr
+
+actions:
+  create-archive:
+    - "python3 -m build --sdist --outdir ."
+    - "sh -c 'echo wait_for_copr-$(hatch version).tar.gz'"
+  get-current-version:
+    - "hatch version"
+
+srpm_build_deps:
+  - python3-build
+  - hatch
+  - python3-hatch-vcs
+
+jobs:
+- job: copr_build
+  trigger: release
+  preserve_project: true
+  targets:
+  - fedora-all
+
+- job: copr_build
+  trigger: commit
+  branch: main
+  preserve_project: true
+  targets:
+    - fedora-all
+
+- job: copr_build
+  trigger: pull_request
+  targets:
+  - fedora-all
+
+- job: tests
+  trigger: pull_request
+  targets:
+  - fedora-all

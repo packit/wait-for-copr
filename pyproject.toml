@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wait-for-copr"
+authors = [
+    { name = "Red Hat", email = "user-cont-team@redhat.com" },
+]
+description = "A tool to wait for dependencies being built in Copr."
+readme = "README.md"
+license = "MIT"
+license-files = { paths = ["LICENSE"] }
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+dynamic = ["version"]
+keywords = [
+    "git",
+    "packaging",
+    "fedora",
+    "rpm",
+]
+dependencies = [
+    "click",
+    "copr",
+]
+
+[project.urls]
+Homepage = "https://github.com/packit/wait-for-copr"
+
+[project.scripts]
+wait-for-copr = "wait_for_copr:wait_for_copr"
+
+[tool.hatch.version]
+source = "vcs"
+raw-options.version_scheme = "post-release"
+
+[tool.hatch.build.targets.wheel]
+packages = ["wait_for_copr"]
+
