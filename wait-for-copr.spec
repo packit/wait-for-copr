@@ -17,8 +17,8 @@ A tool to wait for dependencies being built in Copr.
 
 
 %generate_buildrequires
-%pyproject_buildrequires
-
+# The -w flag is required for EPEL 9's older hatchling
+%pyproject_buildrequires %{?el9:-w}
 
 %build
 %pyproject_wheel
@@ -29,8 +29,12 @@ A tool to wait for dependencies being built in Copr.
 %pyproject_save_files wait_for_copr
 
 %files -f %{pyproject_files}
-%license LICENSE
 %{_bindir}/wait-for-copr
+
+# Epel9 does not tag the license file in pyproject_files as a license. Manually install it in this case
+%if 0%{?el9}
+%license LICENSE
+%endif
 
 %doc README.md
 
