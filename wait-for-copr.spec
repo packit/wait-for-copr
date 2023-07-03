@@ -8,7 +8,6 @@ URL:            https://github.com/packit/wait-for-copr
 Source0:        wait_for_copr-0.0.post1+g12811b4.tar.gz
 BuildArch:      noarch
 BuildRequires:  python3-devel
-BuildRequires:  python3dist(click-man)
 
 %description
 A tool to wait for dependencies being built in Copr.
@@ -28,12 +27,10 @@ A tool to wait for dependencies being built in Copr.
 %install
 %pyproject_install
 %pyproject_save_files wait_for_copr
-PYTHONPATH="%{buildroot}%{python3_sitelib}" click-man wait-for-copr --target %{buildroot}%{_mandir}/man1
 
 %files -f %{pyproject_files}
 %license LICENSE
 %{_bindir}/wait-for-copr
-%{_mandir}/man1/wait-for-copr*.1*
 
 %doc README.md
 
