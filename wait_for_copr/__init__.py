@@ -29,7 +29,8 @@ def wait_for_copr(owner, project, max_tries, dependency, release):
     client = Client.create_from_config_file()
 
     click.echo(
-        f"Waiting for {dependency} release `{release}` in {owner}/{project} (max_tries={max_tries} * 10s)"
+        f"Waiting for {dependency} release `{release}` in {owner}/{project} "
+        f"(max_tries={max_tries} * 10s)"
     )
 
     for _ in range(max_tries):
