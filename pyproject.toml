@@ -50,4 +50,3 @@ raw-options.version_scheme = "post-release"
 
 [tool.hatch.build.targets.wheel]
 packages = ["wait_for_copr"]
-
