@@ -41,7 +41,7 @@ def wait_for_copr(owner, project, max_tries, dependency, release):
 
             click.echo(f"Last successul: {built_version}")
 
-            if built_version.endswith(release):
+            if release in built_version:
                 click.echo(f"Built found: {built_version}")
                 return
 
