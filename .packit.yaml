@@ -37,8 +37,10 @@ jobs:
     trigger: pull_request
     targets:
       - fedora-all
+      - epel-9
 
   - job: tests
     trigger: pull_request
     targets:
       - fedora-all
+      - epel-9
