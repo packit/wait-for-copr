@@ -1,11 +1,11 @@
 Name:           wait-for-copr
-Version:        0.0.post1+g12811b4
-Release:        1.20230703170440785550.main%{?dist}
+Version:        0.0.1
+Release:        1%{?dist}
 Summary:        A tool for integrating upstream projects with Fedora operating system
 
 License:        MIT
 URL:            https://github.com/packit/wait-for-copr
-Source0:        wait_for_copr-0.0.post1+g12811b4.tar.gz
+Source0:        %{srcname}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  python3-devel
 
@@ -13,7 +13,7 @@ BuildRequires:  python3-devel
 A tool to wait for dependencies being built in Copr.
 
 %prep
-%autosetup -n wait_for_copr-0.0.post1+g12811b4
+%autosetup -n %{srcname}-%{version}
 
 
 %generate_buildrequires
@@ -39,11 +39,4 @@ A tool to wait for dependencies being built in Copr.
 %doc README.md
 
 %changelog
-* Mon Jul 03 2023 Frantisek Lachman <flachman@redhat.com> - 0.0.post1+g12811b4-1.20230703170440785550.main
-- Development snapshot (12811b44)
-
-* Mon Jul 03 2023 Frantisek Lachman <flachman@redhat.com> - 0.0.post1+g12811b4-1.20230703170224152868.main
-- Development snapshot (12811b44)
-
-* Mon Jul 03 2023 Frantisek Lachman <flachman@redhat.com> - 0.0.post1+g12811b4-1.20230703165551646432.main
-- Development snapshot (12811b44)
+%autochangelog
