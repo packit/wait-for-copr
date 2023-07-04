@@ -11,13 +11,15 @@ from copr.v3.exceptions import CoprNoResultException
 
 
 @click.command()
+@click.option("--owner", help="Owner of the Copr repository.")
+@click.option("--project", help="Name of the Copr project.")
 @click.option(
-    "--owner",
+    "--max-tries",
+    default=180,
+    type=int,
+    help="How many times we should check the dependency before exiting. "
+    "There is 10s interval between checks.",
 )
-@click.option(
-    "--project",
-)
-@click.option("--max-tries", default=180, type=int)
 @click.argument(
     "dependency",
     required=True,
@@ -26,6 +28,17 @@ from copr.v3.exceptions import CoprNoResultException
     "release",
 )
 def wait_for_copr(owner, project, max_tries, dependency, release):
+    """
+    This command periodically checks Copr
+    for the last build of the given DEPENDENCY package
+    until the last build contains the given RELEASE.
+
+    (The substring is checked.)
+
+    Example usage:
+
+    $ wait-for-copr --owner packit --project fedora-copr-copr-2720 python-copr 007c498c
+    """
     client = Client.create_from_config_file()
 
     click.echo(
