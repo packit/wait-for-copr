@@ -18,7 +18,13 @@ from copr.v3.exceptions import CoprNoResultException
     default=180,
     type=int,
     help="How many times we should check the dependency before exiting. "
-    "There is 10s interval between checks.",
+    "There is INTERVAL number of seconds between checks.",
+)
+@click.option(
+    "--interval",
+    default=10,
+    type=int,
+    help="How much time we should wait between each try.",
 )
 @click.argument(
     "dependency",
@@ -27,7 +33,7 @@ from copr.v3.exceptions import CoprNoResultException
 @click.argument(
     "release",
 )
-def wait_for_copr(owner, project, max_tries, dependency, release):
+def wait_for_copr(owner, project, max_tries, interval, dependency, release):
     """
     This command periodically checks Copr
     for the last build of the given DEPENDENCY package
@@ -43,25 +49,35 @@ def wait_for_copr(owner, project, max_tries, dependency, release):
 
     click.echo(
         f"Waiting for {dependency} release `{release}` in {owner}/{project} "
-        f"(max_tries={max_tries} * 10s)"
+        f"(max_tries={max_tries} * {interval}s)"
     )
 
     for _ in range(max_tries):
+        copr_package_proxy = client.package_proxy
+
+        if not copr_package_proxy:
+            # Might be caused by a network issue.
+            click.echo("Issue with initiating Copr package proxy. Retrying.")
+            time.sleep(interval)
+            continue
+
         try:
-            built_version = client.package_proxy.get(
+            built_version = copr_package_proxy.get(
                 owner, project, dependency, with_latest_succeeded_build=True
             ).builds["latest_succeeded"]["source_package"]["version"]
-
-            click.echo(f"Last successul: {built_version}")
-
-            if release in built_version:
-                click.echo(f"Built found: {built_version}")
-                return
-
         except CoprNoResultException as ex:
+            # Might be caused by package/project not being present in Copr yet.
             click.echo(str(ex))
+            time.sleep(interval)
+            continue
 
-        time.sleep(10)
+        click.echo(f"Last successful: {built_version}")
+
+        if release in built_version:
+            click.echo(f"Built found: {built_version}")
+            return
+
+        time.sleep(interval)
 
     click.echo("timeout waiting for build")
 
