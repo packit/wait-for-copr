@@ -55,29 +55,26 @@ def wait_for_copr(owner, project, max_tries, interval, dependency, release):
     )
 
     for _ in range(max_tries):
-        copr_package_proxy = client.package_proxy
-
-        if not copr_package_proxy:
-            # Might be caused by a network issue.
-            click.echo("Issue with initiating Copr package proxy. Retrying.")
-            time.sleep(interval)
-            continue
-
         try:
-            built_version = copr_package_proxy.get(
-                owner, project, dependency, with_latest_succeeded_build=True
-            ).builds["latest_succeeded"]["source_package"]["version"]
+            builds = client.build_proxy.get_list(owner, project, dependency)
+            click.echo(
+                f"{len(builds)} build(s) found "
+                f"for {dependency} in {owner}/{project}"
+            )
+
+            for build in builds:
+                if release in (built_version := build["source_package"]["version"]):
+                    if build["state"] == "succeeded":
+                        click.echo(f"Build found: {built_version}")
+                        return
+                    if build["state"] in ["failed", "canceled"]:
+                        click.echo(f"Build found but failed: {built_version}", err=True)
+                        sys.exit(3)
+
+            click.echo(f"Build with release '{release}' not found for {dependency}.")
         except CoprNoResultException as ex:
             # Might be caused by package/project not being present in Copr yet.
             click.echo(str(ex))
-            time.sleep(interval)
-            continue
-
-        click.echo(f"Last successful: {built_version}")
-
-        if release in built_version:
-            click.echo(f"Built found: {built_version}")
-            return
 
         time.sleep(interval)
 
