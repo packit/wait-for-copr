@@ -6,6 +6,8 @@
 
 import click
 import time
+import sys
+
 from copr.v3 import Client
 from copr.v3.exceptions import CoprNoResultException
 
@@ -79,7 +81,8 @@ def wait_for_copr(owner, project, max_tries, interval, dependency, release):
 
         time.sleep(interval)
 
-    click.echo("timeout waiting for build")
+    click.echo("timeout waiting for build", err=True)
+    sys.exit(2)
 
 
 if __name__ == "__main__":
