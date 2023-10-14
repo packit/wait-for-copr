@@ -63,7 +63,9 @@ def wait_for_copr(owner, project, max_tries, interval, dependency, release):
             )
 
             for build in builds:
-                if release in (built_version := build["source_package"]["version"]):
+                if build["source_package"].get("version") and release in (
+                    built_version := build["source_package"]["version"]
+                ):
                     if build["state"] == "succeeded":
                         click.echo(f"Build found: {built_version}")
                         return
