@@ -47,6 +47,7 @@ wait-for-copr = "wait_for_copr:wait_for_copr"
 [tool.hatch.version]
 source = "vcs"
 raw-options.version_scheme = "post-release"
+raw-options.git_describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--abbrev=9", "--match", "*[0-9]*"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["wait_for_copr"]
